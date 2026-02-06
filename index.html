@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wódr Spa - A Space to Slow Down</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState } = React;
+
+        // Inline SVG Icon Components  
+        const Calendar = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+        );
+
+        const Clock = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+        );
+
+        const User = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+        );
+
+        const Mail = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+        );
+
+        const Phone = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+            </svg>
+        );
+
+        const FileText = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+            </svg>
+        );
+
+        const CreditCard = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                <line x1="1" y1="10" x2="23" y2="10"></line>
+            </svg>
+        );
+
+        const Check = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+        );
+
+        const Zap = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+        );
+
+        const X = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        );
+
+
+const WodrSpaWebsite = () => {
+  const [bookingOpen, setBookingOpen] = useState(false);
+  const [step, setStep] = useState(1);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [customerInfo, setCustomerInfo] = useState({ name: '', email: '', phone: '' });
+  const [waiverSigned, setWaiverSigned] = useState(false);
+  const [discountCode, setDiscountCode] = useState('');
+
+  // Pod Scheduling Logic
+  const generateDaySchedule = (date) => {
+    const pod1 = [
+      { time: '10:00 AM', duration: 90, pod: 1 },
+      { time: '12:00 PM', duration: 90, pod: 1 },
+      { time: '2:00 PM', duration: 120, pod: 1 },
+      { time: '4:30 PM', duration: 90, pod: 1 },
+      { time: '6:30 PM', duration: 120, pod: 1 },
+    ];
+
+    const pod2 = [
+      { time: '10:30 AM', duration: 120, pod: 2 },
+      { time: '1:00 PM', duration: 120, pod: 2 },
+      { time: '3:30 PM', duration: 120, pod: 2 },
+      { time: '6:00 PM', duration: 90, pod: 2 },
+      { time: '8:00 PM', duration: 90, pod: 2 },
+    ];
+
+    return [...pod1, ...pod2].sort((a, b) => {
+      const timeA = new Date('2000-01-01 ' + a.time);
+      const timeB = new Date('2000-01-01 ' + b.time);
+      return timeA - timeB;
+    });
+  };
+
+  const bookedSlots = {
+    '2026-02-07': [
+      { time: '10:00 AM', duration: 90 },
+      { time: '2:00 PM', duration: 120 },
+      { time: '6:00 PM', duration: 90 },
+    ],
+    '2026-02-08': [
+      { time: '10:30 AM', duration: 120 },
+      { time: '4:30 PM', duration: 90 },
+    ],
+    '2026-02-09': [
+      { time: '12:00 PM', duration: 90 },
+      { time: '3:30 PM', duration: 120 },
+    ],
+    '2026-02-10': [
+      { time: '10:00 AM', duration: 90 },
+      { time: '10:30 AM', duration: 120 },
+      { time: '1:00 PM', duration: 120 },
+      { time: '6:30 PM', duration: 120 },
+    ],
+    '2026-02-11': [
+      { time: '8:00 PM', duration: 90 },
+    ],
+    '2026-02-12': [
+      { time: '12:00 PM', duration: 90 },
+      { time: '6:00 PM', duration: 90 },
+    ],
+    '2026-02-13': [
+      { time: '10:00 AM', duration: 90 },
+      { time: '2:00 PM', duration: 120 },
+      { time: '3:30 PM', duration: 120 },
+    ],
+    '2026-02-14': [
+      { time: '10:00 AM', duration: 90 },
+      { time: '10:30 AM', duration: 120 },
+      { time: '12:00 PM', duration: 90 },
+      { time: '1:00 PM', duration: 120 },
+      { time: '2:00 PM', duration: 120 },
+      { time: '3:30 PM', duration: 120 },
+      { time: '4:30 PM', duration: 90 },
+      { time: '6:00 PM', duration: 90 },
+      { time: '6:30 PM', duration: 120 },
+      { time: '8:00 PM', duration: 90 },
+    ],
+    '2026-02-15': [
+      { time: '1:00 PM', duration: 120 },
+      { time: '4:30 PM', duration: 90 },
+    ],
+    '2026-02-16': [
+      { time: '10:30 AM', duration: 120 },
+    ],
+  };
+
+  const [viewingDate, setViewingDate] = useState('2026-02-07');
+  const [currentMonth] = useState(new Date(2026, 1, 1));
+
+  const isSlotBooked = (dateStr, time, duration) => {
+    const dayBookings = bookedSlots[dateStr] || [];
+    return dayBookings.some(b => b.time === time && b.duration === duration);
+  };
+
+  const getAvailableSlots = (dateStr) => {
+    const schedule = generateDaySchedule(dateStr);
+    return schedule.map(slot => ({
+      ...slot,
+      available: !isSlotBooked(dateStr, slot.time, slot.duration)
+    }));
+  };
+
+  const getAvailabilityCount = (dateStr) => {
+    const slots = getAvailableSlots(dateStr);
+    const available = slots.filter(s => s.available).length;
+    return { available, total: slots.length };
+  };
+
+  const getDaysInMonth = (date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const startingDayOfWeek = firstDay.getDay();
+    
+    return { daysInMonth, startingDayOfWeek };
+  };
+
+  const formatDate = (dateStr) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+  };
+
+  const calculateTotal = () => {
+    if (!selectedSlot) return 0;
+    let basePrice = selectedSlot.duration === 90 ? 95 : 135;
+    if (discountCode === 'FIRST20') {
+      basePrice *= 0.8;
+    }
+    return basePrice;
+  };
+
+  const openBooking = () => {
+    setBookingOpen(true);
+    setStep(1);
+    setSelectedDate(null);
+    setSelectedSlot(null);
+    setCustomerInfo({ name: '', email: '', phone: '' });
+    setWaiverSigned(false);
+    setDiscountCode('');
+    setViewingDate('2026-02-07');
+  };
+
+  const closeBooking = () => {
+    setBookingOpen(false);
+  };
+
+  // Booking Modal Steps (same as before but in modal format)
+  const CalendarStep = () => {
+    const { daysInMonth, startingDayOfWeek } = getDaysInMonth(currentMonth);
+    const monthName = currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    
+    const days = [];
+    for (let i = 0; i < startingDayOfWeek; i++) {
+      days.push(null);
+    }
+    for (let i = 1; i <= daysInMonth; i++) {
+      days.push(i);
+    }
+
+    const availableSlots = viewingDate ? getAvailableSlots(viewingDate) : [];
+
+    return (
+      <div className="space-y-6">
+        <div className="text-center">
+          <h2 className="text-2xl font-light text-gray-100 mb-2 tracking-wide">Select Your Date</h2>
+          <p className="text-gray-400 text-sm">Choose from available times</p>
+        </div>
+
+        <div className="text-center">
+          <h3 className="text-xl font-light text-gray-200 tracking-wider">{monthName}</h3>
+        </div>
+
+        <div className="bg-gray-800/50 backdrop-blur rounded-lg border border-gray-700/50 p-4">
+          <div className="grid grid-cols-7 gap-2 mb-3">
+            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+              <div key={day} className="text-center text-xs font-light text-gray-400 tracking-wider uppercase py-1">
+                {day}
+              </div>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-7 gap-2">
+            {days.map((day, idx) => {
+              if (!day) {
+                return <div key={`empty-${idx}`} className="aspect-square" />;
+              }
+
+              const dateStr = `2026-02-${String(day).padStart(2, '0')}`;
+              const availability = getAvailabilityCount(dateStr);
+              const hasSlots = availability.total > 0;
+              const isFullyBooked = hasSlots && availability.available === 0;
+              const isViewing = viewingDate === dateStr;
+              const isPast = day < 7;
+
+              return (
+                <button
+                  key={day}
+                  onClick={() => hasSlots && !isPast ? setViewingDate(dateStr) : null}
+                  disabled={!hasSlots || isPast}
+                  className={`
+                    aspect-square rounded-lg p-2 transition-all relative text-sm
+                    ${isPast ? 'bg-gray-900/30 text-gray-600 cursor-not-allowed' : ''}
+                    ${!hasSlots && !isPast ? 'bg-gray-900/30 text-gray-600 cursor-not-allowed' : ''}
+                    ${hasSlots && !isPast && !isFullyBooked ? 'bg-gradient-to-br from-amber-900/20 to-amber-800/10 border border-amber-700/30 hover:border-amber-500/50 cursor-pointer' : ''}
+                    ${isFullyBooked ? 'bg-gray-900/50 border border-gray-700/30 text-gray-500 cursor-not-allowed' : ''}
+                    ${isViewing ? 'ring-2 ring-amber-500/60 bg-gradient-to-br from-amber-800/30 to-amber-700/20' : ''}
+                  `}
+                >
+                  <div className={`font-light ${isViewing ? 'text-amber-200' : hasSlots && !isPast && !isFullyBooked ? 'text-gray-200' : 'text-gray-600'}`}>
+                    {day}
+                  </div>
+                  {hasSlots && !isPast && (
+                    <div className="text-xs mt-0.5 font-light">
+                      {isFullyBooked ? (
+                        <span className="text-gray-500">Full</span>
+                      ) : (
+                        <span className="text-amber-400/80">
+                          {availability.available}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {viewingDate && availableSlots.length > 0 && (
+          <div className="bg-gray-800/50 backdrop-blur rounded-lg border border-gray-700/50 p-4">
+            <h3 className="text-lg font-light text-gray-100 mb-3 flex items-center gap-2">
+              <Calendar size={18} className="text-amber-500" />
+              {formatDate(viewingDate)}
+            </h3>
+            <p className="text-gray-400 mb-4 font-light text-sm">Select your preferred time and duration</p>
+            
+            <div className="space-y-2">
+              {availableSlots.map((slot) => (
+                <button
+                  key={`${slot.time}-${slot.duration}`}
+                  onClick={() => {
+                    if (slot.available) {
+                      setSelectedSlot(slot);
+                      setSelectedDate(viewingDate);
+                      setStep(2);
+                    }
+                  }}
+                  disabled={!slot.available}
+                  className={`
+                    w-full px-4 py-3 rounded-lg font-light transition-all text-left text-sm
+                    ${slot.available 
+                      ? 'bg-gradient-to-r from-amber-900/30 to-amber-800/20 border border-amber-700/40 hover:border-amber-500/60 cursor-pointer' 
+                      : 'bg-gray-900/30 border border-gray-700/30 cursor-not-allowed'
+                    }
+                  `}
+                >
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <div className={`${slot.available ? 'text-gray-100' : 'text-gray-600 line-through'}`}>
+                        {slot.time}
+                      </div>
+                      <div className={`text-xs ${slot.available ? 'text-amber-400/80' : 'text-gray-600'}`}>
+                        {slot.duration} minutes {!slot.available && '(Booked)'}
+                      </div>
+                    </div>
+                    <div className={`text-lg font-light ${slot.available ? 'text-gray-200' : 'text-gray-600'}`}>
+                      ${slot.duration === 90 ? '95' : '135'}
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const CustomerInfoStep = () => (
+    <div className="space-y-4">
+      <div className="text-center">
+        <h2 className="text-2xl font-light text-gray-100 mb-2 tracking-wide">Your Information</h2>
+        <p className="text-gray-400 font-light text-sm">We'll send your confirmation here</p>
+      </div>
+
+      <div className="bg-gray-800/50 backdrop-blur rounded-lg border border-gray-700/50 p-4">
+        <div className="space-y-2 text-sm font-light">
+          <div className="flex justify-between">
+            <span className="text-gray-400">Date:</span>
+            <span className="text-gray-200">{formatDate(selectedDate)}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-400">Time:</span>
+            <span className="text-gray-200">{selectedSlot.time}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-400">Duration:</span>
+            <span className="text-amber-400">{selectedSlot.duration} minutes</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-3">
+        <div>
+          <label className="block text-xs font-light text-gray-300 mb-1.5 tracking-wide">Full Name</label>
+          <div className="relative">
+            <User size={16} className="absolute left-3 top-3 text-gray-500" />
+            <input
+              type="text"
+              value={customerInfo.name}
+              onChange={(e) => setCustomerInfo({ ...customerInfo, name: e.target.value })}
+              className="w-full pl-10 pr-3 py-2.5 bg-gray-800/50 border border-gray-700/50 rounded-lg focus:border-amber-500/50 focus:outline-none text-gray-200 font-light text-sm"
+              placeholder="John Doe"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-xs font-light text-gray-300 mb-1.5 tracking-wide">Email</label>
+          <div className="relative">
+            <Mail size={16} className="absolute left-3 top-3 text-gray-500" />
+            <input
+              type="email"
+              value={customerInfo.email}
+              onChange={(e) => setCustomerInfo({ ...customerInfo, email: e.target.value })}
+              className="w-full pl-10 pr-3 py-2.5 bg-gray-800/50 border border-gray-700/50 rounded-lg focus:border-amber-500/50 focus:outline-none text-gray-200 font-light text-sm"
+              placeholder="john@example.com"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-xs font-light text-gray-300 mb-1.5 tracking-wide">Phone</label>
+          <div className="relative">
+            <Phone size={16} className="absolute left-3 top-3 text-gray-500" />
+            <input
+              type="tel"
+              value={customerInfo.phone}
+              onChange={(e) => setCustomerInfo({ ...customerInfo, phone: e.target.value })}
+              className="w-full pl-10 pr-3 py-2.5 bg-gray-800/50 border border-gray-700/50 rounded-lg focus:border-amber-500/50 focus:outline-none text-gray-200 font-light text-sm"
+              placeholder="(555) 123-4567"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-xs font-light text-gray-300 mb-1.5 tracking-wide">Discount Code (Optional)</label>
+          <input
+            type="text"
+            value={discountCode}
+            onChange={(e) => setDiscountCode(e.target.value)}
+            className="w-full px-3 py-2.5 bg-gray-800/50 border border-gray-700/50 rounded-lg focus:border-amber-500/50 focus:outline-none text-gray-200 font-light text-sm"
+            placeholder="Try: FIRST20"
+          />
+          {discountCode === 'FIRST20' && (
+            <p className="text-amber-400 text-xs mt-1.5 font-light">✓ 20% discount applied</p>
+          )}
+        </div>
+      </div>
+
+      <button
+        onClick={() => setStep(3)}
+        disabled={!customerInfo.name || !customerInfo.email || !customerInfo.phone}
+        className="w-full px-4 py-3 bg-gradient-to-r from-amber-900/50 to-amber-800/40 border border-amber-700/50 text-amber-100 rounded-lg hover:border-amber-500/60 transition-all font-light tracking-wide disabled:bg-gray-800/30 disabled:border-gray-700/30 disabled:text-gray-600 disabled:cursor-not-allowed text-sm"
+      >
+        Continue to Waiver
+      </button>
+
+      <button
+        onClick={() => setStep(1)}
+        className="w-full px-4 py-2.5 border border-gray-700/50 text-gray-400 rounded-lg hover:border-gray-600/50 hover:bg-gray-800/30 transition-all font-light text-sm"
+      >
+        ← Back
+      </button>
+    </div>
+  );
+
+  const WaiverStep = () => (
+    <div className="space-y-4">
+      <div className="text-center">
+        <h2 className="text-2xl font-light text-gray-100 mb-2 tracking-wide">Liability Waiver</h2>
+        <p className="text-gray-400 font-light text-sm">Please review and sign</p>
+      </div>
+
+      <div className="bg-gray-800/50 backdrop-blur border border-gray-700/50 rounded-lg p-4 max-h-64 overflow-y-auto">
+        <h3 className="font-light mb-3 text-gray-200 tracking-wide text-sm">Wódr Spa Liability Waiver</h3>
+        <div className="space-y-2 text-xs text-gray-400 font-light leading-relaxed">
+          <p>I understand that participating in thermal spa experiences involves being in an environment with hot tubs, cold plunges, and saunas.</p>
+          <p>I certify that I do not have any conditions that would make thermal spa use unsafe.</p>
+          <p>I agree to follow all posted rules and release Wódr Spa from liability.</p>
+        </div>
+      </div>
+
+      {!waiverSigned ? (
+        <div className="bg-gray-900/50 border border-gray-700/50 border-dashed rounded-lg p-6 text-center">
+          <FileText size={40} className="mx-auto text-gray-600 mb-3" />
+          <p className="text-gray-400 mb-3 font-light text-sm">Sign with your mouse or finger</p>
+          <button
+            onClick={() => setWaiverSigned(true)}
+            className="px-6 py-2.5 bg-gradient-to-r from-amber-900/50 to-amber-800/40 border border-amber-700/50 text-amber-100 rounded-lg hover:border-amber-500/60 transition-all font-light text-sm"
+          >
+            Sign Waiver
+          </button>
+        </div>
+      ) : (
+        <div className="bg-amber-900/20 border border-amber-700/40 rounded-lg p-4 text-center">
+          <Check size={40} className="mx-auto text-amber-500 mb-2" />
+          <p className="text-amber-200 font-light text-sm">Waiver Signed</p>
+        </div>
+      )}
+
+      <button
+        onClick={() => setStep(4)}
+        disabled={!waiverSigned}
+        className="w-full px-4 py-3 bg-gradient-to-r from-amber-900/50 to-amber-800/40 border border-amber-700/50 text-amber-100 rounded-lg hover:border-amber-500/60 transition-all font-light tracking-wide disabled:bg-gray-800/30 disabled:border-gray-700/30 disabled:text-gray-600 disabled:cursor-not-allowed text-sm"
+      >
+        Continue to Payment
+      </button>
+
+      <button
+        onClick={() => setStep(2)}
+        className="w-full px-4 py-2.5 border border-gray-700/50 text-gray-400 rounded-lg hover:border-gray-600/50 hover:bg-gray-800/30 transition-all font-light text-sm"
+      >
+        ← Back
+      </button>
+    </div>
+  );
+
+  const PaymentStep = () => (
+    <div className="space-y-4">
+      <div className="text-center">
+        <h2 className="text-2xl font-light text-gray-100 mb-2 tracking-wide">Payment</h2>
+        <p className="text-gray-400 font-light text-sm">Secure payment via Stripe</p>
+      </div>
+
+      <div className="bg-gray-800/50 backdrop-blur border border-gray-700/50 rounded-lg p-4">
+        <h3 className="font-light mb-3 text-gray-200 tracking-wide text-sm">Booking Summary</h3>
+        <div className="space-y-2 text-xs font-light">
+          <div className="flex justify-between">
+            <span className="text-gray-400">Date & Time:</span>
+            <span className="text-gray-200">{formatDate(selectedDate)} at {selectedSlot.time}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-400">Duration:</span>
+            <span className="text-gray-200">{selectedSlot.duration} minutes</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-400">Subtotal:</span>
+            <span className="text-gray-200">${selectedSlot.duration === 90 ? '95' : '135'}</span>
+          </div>
+          {discountCode === 'FIRST20' && (
+            <div className="flex justify-between text-amber-400">
+              <span>Discount (20%):</span>
+              <span>-${((selectedSlot.duration === 90 ? 95 : 135) * 0.2).toFixed(2)}</span>
+            </div>
+          )}
+          <div className="flex justify-between pt-2 border-t border-gray-700/50">
+            <span className="text-gray-400">Tax (5%):</span>
+            <span className="text-gray-200">${(calculateTotal() * 0.05).toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between pt-2 border-t border-gray-700/50 text-base">
+            <span className="text-gray-200">Total:</span>
+            <span className="text-amber-400">${(calculateTotal() * 1.05).toFixed(2)}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-amber-900/10 border border-amber-700/30 rounded-lg p-4 text-center">
+        <CreditCard size={40} className="mx-auto text-amber-500 mb-3" />
+        <p className="text-gray-300 mb-3 font-light text-xs">In production, Stripe Checkout would open here</p>
+        <button
+          onClick={() => setStep(5)}
+          className="px-6 py-2.5 bg-gradient-to-r from-amber-900/50 to-amber-800/40 border border-amber-700/50 text-amber-100 rounded-lg hover:border-amber-500/60 transition-all font-light text-sm"
+        >
+          Complete Payment (Demo)
+        </button>
+      </div>
+
+      <button
+        onClick={() => setStep(3)}
+        className="w-full px-4 py-2.5 border border-gray-700/50 text-gray-400 rounded-lg hover:border-gray-600/50 hover:bg-gray-800/30 transition-all font-light text-sm"
+      >
+        ← Back
+      </button>
+    </div>
+  );
+
+  const ConfirmationStep = () => (
+    <div className="space-y-4">
+      <div className="text-center">
+        <div className="w-16 h-16 bg-amber-900/20 border border-amber-700/40 rounded-full flex items-center justify-center mx-auto mb-3">
+          <Check size={40} className="text-amber-500" />
+        </div>
+        <h2 className="text-2xl font-light text-gray-100 mb-2 tracking-wide">Booking Confirmed</h2>
+        <p className="text-gray-400 font-light text-sm">A space to slow down awaits you</p>
+      </div>
+
+      <div className="bg-gray-800/50 backdrop-blur border border-gray-700/50 rounded-lg p-4">
+        <h3 className="font-light mb-3 text-gray-200 tracking-wide text-sm">Your Thermal Experience</h3>
+        <div className="space-y-3">
+          <div className="flex items-start gap-2">
+            <Calendar size={16} className="text-amber-500 mt-0.5" />
+            <div className="text-sm">
+              <p className="text-gray-200 font-light">{formatDate(selectedDate)}</p>
+              <p className="text-xs text-gray-400 font-light">{selectedSlot.time}</p>
+            </div>
+          </div>
+          <div className="flex items-start gap-2">
+            <Clock size={16} className="text-amber-500 mt-0.5" />
+            <div className="text-sm">
+              <p className="text-gray-200 font-light">{selectedSlot.duration} minute experience</p>
+              <p className="text-xs text-gray-400 font-light">Private spa unit</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-gradient-to-br from-purple-900/20 to-blue-900/20 border border-purple-700/30 rounded-lg p-4">
+        <div className="flex items-center gap-2 mb-3">
+          <Zap size={20} className="text-purple-400" />
+          <h3 className="font-light text-gray-200 tracking-wide text-sm">Automated Experience</h3>
+        </div>
+        <div className="space-y-2 text-xs font-light">
+          <div className="flex items-center gap-2 text-gray-300">
+            <Check size={14} className="text-amber-500" />
+            <span>Confirmation email sent</span>
+          </div>
+          <div className="flex items-center gap-2 text-gray-300">
+            <Check size={14} className="text-amber-500" />
+            <span>SMS reminder scheduled</span>
+          </div>
+          <div className="flex items-center gap-2 text-gray-300">
+            <Check size={14} className="text-amber-500" />
+            <span>Home automation synchronized</span>
+          </div>
+        </div>
+      </div>
+
+      <button
+        onClick={closeBooking}
+        className="w-full px-4 py-3 bg-gradient-to-r from-amber-900/50 to-amber-800/40 border border-amber-700/50 text-amber-100 rounded-lg hover:border-amber-500/60 transition-all font-light text-sm"
+      >
+        Done
+      </button>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen bg-gray-900">
+      {/* Hero Section */}
+      <div className="relative h-screen">
+        <div className="absolute inset-0 bg-gradient-to-b from-gray-900/50 to-gray-900"></div>
+        <div 
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: "url('https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1600&q=80')",
+            filter: 'brightness(0.4)'
+          }}
+        ></div>
+        
+        <div className="relative z-10 h-full flex items-center justify-center px-4">
+          <div className="text-center max-w-4xl">
+            <h1 className="text-6xl md:text-7xl lg:text-8xl font-light text-gray-100 mb-6 tracking-wider">
+              Wódr Spa
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-300 font-light mb-12 tracking-wide">
+              A space to slow down
+            </p>
+            <button
+              onClick={openBooking}
+              className="px-12 py-5 bg-gradient-to-r from-amber-900/60 to-amber-800/50 border-2 border-amber-700/60 text-amber-100 rounded-lg hover:border-amber-500/80 hover:shadow-2xl hover:shadow-amber-500/20 transition-all font-light text-lg tracking-widest"
+            >
+              RESERVE YOUR EXPERIENCE
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Features Section */}
+      <div className="max-w-7xl mx-auto px-4 py-24">
+        <div className="grid md:grid-cols-3 gap-12">
+          <div className="text-center">
+            <div className="w-20 h-20 bg-amber-900/20 border border-amber-700/40 rounded-full flex items-center justify-center mx-auto mb-6">
+              <span className="text-3xl">🛁</span>
+            </div>
+            <h3 className="text-xl font-light text-gray-200 mb-4 tracking-wide">Private Space</h3>
+            <p className="text-gray-400 font-light leading-relaxed">
+              Each reservation includes access to a private spa unit with cedar hot tub, dry sauna, cold plunge, and loungers.
+            </p>
+          </div>
+
+          <div className="text-center">
+            <div className="w-20 h-20 bg-amber-900/20 border border-amber-700/40 rounded-full flex items-center justify-center mx-auto mb-6">
+              <span className="text-3xl">☕</span>
+            </div>
+            <h3 className="text-xl font-light text-gray-200 mb-4 tracking-wide">Provisions</h3>
+            <p className="text-gray-400 font-light leading-relaxed">
+              Towels, drinking water, and herbal teas provided. Bring a bathing suit if you prefer. All you need is time.
+            </p>
+          </div>
+
+          <div className="text-center">
+            <div className="w-20 h-20 bg-amber-900/20 border border-amber-700/40 rounded-full flex items-center justify-center mx-auto mb-6">
+              <span className="text-3xl">🌲</span>
+            </div>
+            <h3 className="text-xl font-light text-gray-200 mb-4 tracking-wide">Set Your Pace</h3>
+            <p className="text-gray-400 font-light leading-relaxed">
+              Self-guided rhythm of heat, cold, and rest. Your experience, your tempo. No rush, just presence.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* CTA Section */}
+      <div className="bg-gradient-to-r from-amber-900/10 to-amber-800/5 border-y border-amber-700/20 py-20">
+        <div className="max-w-4xl mx-auto text-center px-4">
+          <h2 className="text-4xl font-light text-gray-100 mb-6 tracking-wide">
+            You only need to arrive
+          </h2>
+          <p className="text-gray-300 font-light mb-10 text-lg">
+            Private thermal spas for 1-2 guests. Choose 90 or 120 minute experiences.
+          </p>
+          <button
+            onClick={openBooking}
+            className="px-10 py-4 bg-gradient-to-r from-amber-900/60 to-amber-800/50 border-2 border-amber-700/60 text-amber-100 rounded-lg hover:border-amber-500/80 hover:shadow-2xl hover:shadow-amber-500/20 transition-all font-light text-base tracking-widest"
+          >
+            BOOK NOW
+          </button>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="py-12 text-center text-gray-500 text-sm font-light">
+        <p>45434 Timberwolf Road, Chilliwack, BC</p>
+        <p className="mt-2">© 2026 Wódr Spa</p>
+      </div>
+
+      {/* Booking Modal */}
+      {bookingOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          {/* Backdrop */}
+          <div 
+            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+            onClick={closeBooking}
+          ></div>
+
+          {/* Modal */}
+          <div className="relative bg-gray-900 rounded-xl border border-gray-700/50 shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+            {/* Close Button */}
+            <button
+              onClick={closeBooking}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-200 transition-colors z-10"
+            >
+              <X size={24} />
+            </button>
+
+            {/* Progress Bar */}
+            <div className="sticky top-0 bg-gray-900/95 backdrop-blur border-b border-gray-700/50 p-4 z-10">
+              <div className="flex justify-between items-center mb-2 max-w-md mx-auto">
+                {['Calendar', 'Info', 'Waiver', 'Payment', 'Done'].map((label, idx) => (
+                  <div key={label} className="flex flex-col items-center flex-1">
+                    <div
+                      className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-light ${
+                        step > idx + 1
+                          ? 'bg-amber-600/80 text-gray-900'
+                          : step === idx + 1
+                          ? 'bg-amber-500 text-gray-900'
+                          : 'bg-gray-700 text-gray-500'
+                      }`}
+                    >
+                      {step > idx + 1 ? <Check size={14} /> : idx + 1}
+                    </div>
+                    <span className="text-xs mt-1 hidden sm:block text-gray-400 font-light">{label}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="w-full bg-gray-700/50 h-1.5 rounded-full overflow-hidden max-w-md mx-auto">
+                <div
+                  className="bg-gradient-to-r from-amber-600 to-amber-500 h-full transition-all duration-300"
+                  style={{ width: `${(step / 5) * 100}%` }}
+                />
+              </div>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6">
+              {step === 1 && <CalendarStep />}
+              {step === 2 && <CustomerInfoStep />}
+              {step === 3 && <WaiverStep />}
+              {step === 4 && <PaymentStep />}
+              {step === 5 && <ConfirmationStep />}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+        ReactDOM.render(<WodrSpaWebsite />, document.getElementById('root'));
+    </script>
+</body>
+</html>
